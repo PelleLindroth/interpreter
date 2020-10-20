@@ -1,0 +1,97 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;
+}
+
+.wrapper {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  margin: auto;
+  max-width: 1000px;
+}
+
+h1 {
+  letter-spacing: 1px;
+  margin: 2rem 0 1rem;
+}
+
+.register {
+  background-color: white;
+  display: grid;
+  gap: 2px;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(4, 1fr);
+  height: 22rem;
+  width: 22rem;
+}
+
+.box,
+.clr,
+.run {
+  align-items: center;
+  background-color: #bbb;
+  border-radius: 5px;
+  color: white;
+  display: flex;
+  font-size: 18px;
+  font-weight: 700;
+  justify-content: center;
+}
+
+.clr,
+.run {
+  background-color: #ccc;
+  cursor: pointer;
+}
+
+.clr {
+  color: red;
+}
+
+.run {
+  color: green;
+}
+
+.console,
+.err,
+.success {
+  background-color: #ccc;
+  border-radius: 5px;
+  color: white;
+  font-size: 12px;
+  height: 1rem;
+  letter-spacing: 1px;
+  margin: 2px 0 2px;
+  padding: 1em 2rem;
+  text-align: center;
+  width: 18rem;
+}
+
+.err {
+  color: red;
+}
+
+.success {
+  color: green;
+}
+
+.interpreter {
+  background-color: #ccc;
+  border: none;
+  border-radius: 5px;
+  font-family: 'Source Code Pro', monospace;
+  font-size: 16px;
+  height: 16em;
+  margin-bottom: 2em;
+  outline: 0;
+  padding: 1rem;
+  resize: none;
+  width: 20rem;
+}
