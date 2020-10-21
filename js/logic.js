@@ -45,10 +45,9 @@ function interpret(instructions) {
       continue
     }
 
-    // Check if register exists
-    if (command != 'mov' && !Number(reg) && registers[reg] == 'undefined') {
+    if (command != 'mov' && !Number(reg) && !registers[reg]) {
       return {
-        error: 'Non-existing register',
+        error: `Uninitialised register "${reg}"`,
         line: i + 1,
       }
     }
@@ -235,8 +234,9 @@ function interpret(instructions) {
 }
 
 // => {a: 2, b: 5, c: 1}
-/* console.log(interpret(['mov a 2', 'inc a'])) // => {a: 3}
-console.log(interpret(['mov a 1', 'mov b a', 'dec b'])) // => {a:1, b:0}
+console.log(interpret(['mov a 2', 'inc b'])) // => {a: 3}
+// console.log(interpret(['mov a 1', 'mov b a', 'dec b'])) // => {a:1, b:0}
+/*
 console.log(
   interpret(['mov a 5', 'inc a', 'dec a', 'dec a', 'jnz a -1', 'inc a'])
 ) // => {a: 1}
