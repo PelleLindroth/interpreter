@@ -1,15 +1,43 @@
 function interpret(instructions) {
   let registers = {}
   let labels = []
+  let labelNames = []
   let loop = 0
   let notEqual = false
   let equal = false
   let greater = false
   let less = false
 
+  // Add labels
+  for (let i = 0; i < instructions.length; i++) {
+    const command = instructions[i].split(' ')[0]
+    if (command.match('^.*:$')) {
+      let contains = false
+      let newLabelName = command.slice(0, -1)
+
+      for (let i = 0; i < labels.length; i++) {
+        if (newLabelName == labels[i].name) {
+          contains = true
+        }
+      }
+
+      if (!contains) {
+        labels.push({ name: newLabelName, line: i })
+        labelNames.push(newLabelName)
+      }
+
+      continue
+    }
+  }
+
+  // Execute commands
   for (let i = 0; i < instructions.length; i++) {
     const [command, reg, value] = instructions[i].split(' ')
     let num = +value // undefined if not a number
+
+    if (command.match('^.*:$')) {
+      continue
+    }
 
     // Detect infinite loop
     if (loop++ > 500) {
@@ -27,25 +55,14 @@ function interpret(instructions) {
       less = false
     }
 
-    // Add label if it doesn't exist
-    if (command.match('^.*:$')) {
-      let contains = false
-      let newLabelName = command.slice(0, -1)
-
-      for (let i = 0; i < labels.length; i++) {
-        if (newLabelName == labels[i].name) {
-          contains = true
-        }
-      }
-
-      if (!contains) {
-        labels.push({ name: newLabelName, line: i })
-      }
-
-      continue
-    }
-
-    if (command != 'mov' && !Number(reg) && !registers[reg]) {
+    if (
+      command != 'mov' &&
+      !labelNames.includes(reg) &&
+      !Number(reg) &&
+      !registers[reg]
+    ) {
+      console.log(reg)
+      console.log(labelNames.includes(reg))
       return {
         error: `Uninitialised register "${reg}"`,
         line: i + 1,
@@ -136,6 +153,22 @@ function interpret(instructions) {
         } else {
           notEqual = true
           less = true
+        }
+        break
+
+      case 'jmp':
+        for (label of labels) {
+          if (reg != label.name) {
+            continue
+          }
+          if (reg == label.name && label.line > i) {
+            i = label.line
+          } else {
+            return {
+              error: `Cannot jump back with "jmp"`,
+              line: i + 1,
+            }
+          }
         }
         break
 
@@ -234,7 +267,20 @@ function interpret(instructions) {
 }
 
 // => {a: 2, b: 5, c: 1}
-console.log(interpret(['mov a 2', 'inc b'])) // => {a: 3}
+// console.log(
+//   interpret([
+//     'mov a 2',
+//     'mov b 3',
+//     'jmp label',
+//     'rerun:',
+//     'mov c 4',
+//     'inc a',
+//     'label:',
+//     'cmp a 10',
+//     'jne rerun',
+//     'dec a',
+//   ])
+// ) // => {a: 1}
 // console.log(interpret(['mov a 1', 'mov b a', 'dec b'])) // => {a:1, b:0}
 /*
 console.log(
