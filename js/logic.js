@@ -25,16 +25,15 @@ function interpret(instructions) {
         labels.push({ name: newLabelName, line: i })
         labelNames.push(newLabelName)
       }
-
-      continue
     }
   }
 
-  // Execute commands
+  // Execute program
   for (let i = 0; i < instructions.length; i++) {
     const [command, reg, value] = instructions[i].split(' ')
     let num = +value // undefined if not a number
 
+    // If label, continue
     if (command.match('^.*:$')) {
       continue
     }
@@ -48,7 +47,7 @@ function interpret(instructions) {
     }
 
     // Reset booleans if not jump compare command
-    if (!command.match('^j.*') && command != 'jnz') {
+    if (!command.match('^j.*') && command != 'jnz' && command != 'jmp') {
       notEqual = false
       equal = false
       greater = false
@@ -61,15 +60,13 @@ function interpret(instructions) {
       !Number(reg) &&
       !registers[reg]
     ) {
-      console.log(reg)
-      console.log(labelNames.includes(reg))
       return {
         error: `Uninitialised register "${reg}"`,
         line: i + 1,
       }
     }
 
-    // Switch commands
+    // Execute current command
     switch (command) {
       case 'mov':
         if (num) {
@@ -265,40 +262,3 @@ function interpret(instructions) {
 
   return registers
 }
-
-// => {a: 2, b: 5, c: 1}
-// console.log(
-//   interpret([
-//     'mov a 2',
-//     'mov b 3',
-//     'jmp label',
-//     'rerun:',
-//     'mov c 4',
-//     'inc a',
-//     'label:',
-//     'cmp a 10',
-//     'jne rerun',
-//     'dec a',
-//   ])
-// ) // => {a: 1}
-// console.log(interpret(['mov a 1', 'mov b a', 'dec b'])) // => {a:1, b:0}
-/*
-console.log(
-  interpret(['mov a 5', 'inc a', 'dec a', 'dec a', 'jnz a -1', 'inc a'])
-) // => {a: 1}
-console.log(interpret(['mov a 5', 'mov b a', 'dec b', 'dec b'])) // => {a: 5, b: 3}
-console.log(
-  interpret(['mov a 1', 'jnz 5 3', 'mov b 3', 'dec a', 'jnz a -1', 'dec a'])
-) // => {a: -1}
-console.log(
-  interpret(['mov a 4', 'dec a', 'jnz a -1', 'inc a', 'inc a', 'inc a'])
-) // => {a: 3}
-console.log(interpret(['mov a 2', 'add a 10'])) // => {a:12}
-console.log(interpret(['mov a 2', 'mov b 3', 'add a b'])) // => {a:5, b:3}
-console.log(interpret(['mov a 20', 'sub a 5'])) // => {a:15}
-console.log(interpret(['mov a 7', 'mov b 2', 'sub a b'])) // => {a:5, b:2}
-console.log(interpret(['mov a 20', 'mul a 5'])) // => {a:100}
-console.log(interpret(['mov a 10', 'mov b 5', 'mul a b'])) // => {a:50, b:5}
-console.log(interpret(['mov a 20', 'div a 5'])) // => {a:4}
-console.log(interpret(['mov a 6', 'mov b 3', 'div a b'])) // => {a:2, b:3}
-console.log(interpret(['mov a 1', 'inc a', 'jnz a 1', 'mov b a'])) // => {a:2, b:2} */

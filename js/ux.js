@@ -4,53 +4,51 @@ const consoleUX = document.querySelector('.console')
 const boxes = []
 let commands = []
 
-consoleUX.innerHTML = 'Please type your code below and press RUN'
+const createBoxes = () => {
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 4; j++) {
+      let box = document.createElement('div')
+      box.className = 'box'
+      box.setAttribute('id', i + '' + j)
+      box.style.gridTemplateColumn = i
+      box.style.gridTemplateRow = j
+      if (box.id == '32') {
+        box.innerHTML = 'CLR'
+        box.className = 'clr'
+        box.addEventListener('click', () => {
+          commands = []
+          interpreterUX.value = ''
+          interpreterUX.focus()
+          clearBoxes()
+        })
+      }
+      if (box.id == '33') {
+        box.innerHTML = 'RUN'
+        box.className = 'run'
+        box.addEventListener('click', () => {
+          consoleUX.innerHTML = ''
+          const commands = interpreterUX.value.split('\n')
 
-for (let i = 0; i < 4; i++) {
-  for (let j = 0; j < 4; j++) {
-    let box = document.createElement('div')
-    box.className = 'box'
-    box.setAttribute('id', i + '' + j)
-    box.style.gridTemplateColumn = i
-    box.style.gridTemplateRow = j
-    if (box.id == '32') {
-      box.innerHTML = 'CLR'
-      box.className = 'clr'
-      box.addEventListener('click', () => {
-        commands = []
-        interpreterUX.value = ''
-        interpreterUX.focus()
-        clearBoxes()
-      })
-    }
-    if (box.id == '33') {
-      box.innerHTML = 'RUN'
-      box.className = 'run'
-      box.addEventListener('click', () => {
-        consoleUX.innerHTML = ''
-        const commands = interpreterUX.value.split('\n')
-
-        if (commands.length == 1 && commands[0] == '') {
-          consoleUX.innerHTML = 'No code to run!'
-        } else {
-          for (let i = 0; i < commands.length; i++) {
-            if (commands[i] == '') {
-              commands.splice(i, i + 1)
-              i--
+          if (commands.length == 1 && commands[0] == '') {
+            consoleUX.innerHTML = 'No code to run!'
+          } else {
+            for (let i = 0; i < commands.length; i++) {
+              if (commands[i] == '') {
+                commands.splice(i, i + 1)
+                i--
+              }
             }
+            const registerObject = interpret(commands)
+            const registers = Object.entries(registerObject)
+            drawRegister(registers)
           }
-          const registerObject = interpret(commands)
-          const registers = Object.entries(registerObject)
-          drawRegister(registers)
-        }
-      })
+        })
+      }
+      boxes.push(box)
+      registerUX.appendChild(box)
     }
-    boxes.push(box)
-    registerUX.appendChild(box)
   }
 }
-
-interpreterUX.focus()
 
 const drawRegister = registers => {
   let i = 0
@@ -95,3 +93,7 @@ const handleError = (err, ln) => {
   consoleUX.className = 'err'
   consoleUX.innerHTML = `Error on line ${ln}: ${err}`
 }
+
+createBoxes()
+consoleUX.innerHTML = 'Please type your code below and press RUN'
+interpreterUX.focus()
