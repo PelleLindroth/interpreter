@@ -1,0 +1,3 @@
+createBoxes()
+initiateConsole()
+interpreterUX.focus()
