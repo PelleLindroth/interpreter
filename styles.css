@@ -26,15 +26,19 @@ h1 {
   background-color: white;
   display: grid;
   gap: 2px;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(4, 1fr);
-  height: 22rem;
+  height: 16rem;
   width: 22rem;
 }
 
 .box,
 .clr,
-.run {
+.run-true,
+.run-false,
+.nxt,
+.debug-false,
+.debug-true {
   align-items: center;
   background-color: #bbb;
   border-radius: 5px;
@@ -46,7 +50,9 @@ h1 {
 }
 
 .clr,
-.run {
+.run-true,
+.debug-true,
+.nxt {
   background-color: #ccc;
   cursor: pointer;
 }
@@ -55,13 +61,29 @@ h1 {
   color: red;
 }
 
-.run {
+.run-true {
   color: green;
+}
+
+.run-false {
+  color: #ddd;
+}
+
+.debug-false {
+  color: #ddd;
+  cursor: pointer;
+}
+
+.debug-true,
+.nxt,
+.yellow {
+  color: yellow;
 }
 
 .console,
 .err,
-.success {
+.success,
+.next-line {
   background-color: #ccc;
   border-radius: 5px;
   color: white;
@@ -82,7 +104,19 @@ h1 {
   color: green;
 }
 
-.interpreter {
+.next-line {
+  color: white;
+}
+
+.code {
+  background-color: #bbb;
+  font-family: 'Source Code Pro', monospace;
+  font-size: 14px;
+  padding: 0 5px;
+}
+
+.interpreter,
+.debugger {
   background-color: #ccc;
   border: none;
   border-radius: 5px;
@@ -91,7 +125,41 @@ h1 {
   height: 16em;
   margin-bottom: 2em;
   outline: 0;
+  overflow: auto;
   padding: 1rem;
   resize: none;
   width: 20rem;
+}
+
+.interpreter-hide {
+  display: none;
+}
+
+.interpreter-show {
+  display: block;
+}
+
+.debugger-hide {
+  display: none;
+}
+
+.debugger-show {
+  display: block;
+}
+
+.command-list {
+  list-style: none;
+  font-family: 'Source Code Pro', monospace;
+  font-size: 16px;
+}
+.command-list-element-opaque {
+  color: rgba(90, 90, 90, 0.5);
+}
+
+.command-list-element-highlight {
+  color: white;
+}
+
+.command-list-element-success {
+  color: green;
 }
