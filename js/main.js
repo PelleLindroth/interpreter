@@ -1,3 +1,1 @@
-createBoxes()
-initiateConsole()
-interpreterUX.focus()
+start()

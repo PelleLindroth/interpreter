@@ -96,11 +96,12 @@ h1 {
   width: 18rem;
 }
 
-.err {
+.red {
   color: red;
 }
 
-.success {
+.success,
+.green {
   color: green;
 }
 
@@ -162,4 +163,8 @@ h1 {
 
 .command-list-element-success {
   color: green;
+}
+
+.command-list-element-error {
+  color: red;
 }

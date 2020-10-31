@@ -1,4 +1,4 @@
-const debugInterpreter = () => {
+const debugStart = () => {
   clearBoxes()
   setupDebugger()
   initiateNextButton()
@@ -13,7 +13,8 @@ const setupDebugger = () => {
 const initiateNextButton = () => {
   runBox.className = 'run-false'
   consoleUX.classList.add('next-line')
-  showNextLineMessage()
+  showNextLineMessage(0)
+  refreshDebugWindow(0)
   debugBox.className = 'nxt'
   debugBox.innerHTML = 'NEXT'
   debugBox.removeEventListener('click', toggleDebug, true)
@@ -21,43 +22,63 @@ const initiateNextButton = () => {
 }
 
 const executeNextLine = () => {
-  console.log('runs!')
-  index++
-  console.log(index)
-  commands[index] != undefined && showNextLineMessage()
+  let nextLine = 0
+  if (!debug) return
+  let error = false
+  registerObject = interpret(commands)
+  let history = registerObject.registerHistory
 
-  const registerObject = interpret(commands.slice(0, index))
-  drawRegister(Object.entries(registerObject))
-
-  const lastLines = debuggerUX.firstChild
-  if (lastLines) {
-    debuggerUX.removeChild(lastLines)
-    debuggerUX.appendChild(getCommandList())
+  if (registerObject.error && registerObject.error.line - 1 == index) {
+    handleError(registerObject.error)
+    error = true
+    unmountDebugger(error)
+  } else if (history[index].jmp) {
+    nextLine = history[index].to
+    index++
+  } else if (history[index].label) {
+    nextLine = history[index++].line
+    const registers = Object.entries(JSON.parse(history[index - 2].reg))
+    history[index] ? nextLine = history[index].line : nextLine = nextLine
+    drawRegister(registers)
+  } else {
+    const registers = Object.entries(JSON.parse(history[index++].reg))
+    history[index] ? nextLine = history[index].line : nextLine = nextLine
+    drawRegister(registers)
   }
-
-  if (index + 1 == commands.length) {
-    removeDebugger()
-  }
+  history[index] != undefined && showNextLineMessage(nextLine)
+  refreshDebugWindow(nextLine)
+  index == history.length && unmountDebugger(error)
 }
 
-const showNextLineMessage = () => {
+const showNextLineMessage = nextLine => {
+  if (commands[nextLine] == undefined) return
+
+  let action = ''
+  commands[nextLine].match('^.*:$') ? action = 'skip' : action = 'execute'
+
   consoleUX.innerHTML = `<div>
-Press <span class="yellow">NEXT</span> to execute <span class="code">${commands[index]} </span>
+Press <span class="yellow">NEXT</span> to ${action} <span class="code">${commands[nextLine]} </span>
 </div>`
 }
 
-const getCommandList = () => {
+const refreshDebugWindow = nextLine => {
+  const lastLines = debuggerUX.firstChild
+  if (lastLines) {
+    debuggerUX.removeChild(lastLines)
+    debuggerUX.appendChild(getCommandList(nextLine))
+  }
+}
+
+const getCommandList = nextLine => {
   let commandList = document.createElement('ul')
 
   for (let i = 0; i < commands.length; i++) {
     let li = document.createElement('li')
     li.innerText = commands[i]
-    if (i > index) {
-      li.classList.add('command-list-element-opaque')
-    } else if (i == index) {
+    if (i == nextLine) {
       li.classList.add('command-list-element-highlight')
     } else {
-      li.classList.add('command-list-element-success')
+      li.classList.add('command-list-element-opaque')
     }
 
     commandList.appendChild(li)
@@ -67,28 +88,44 @@ const getCommandList = () => {
   return commandList
 }
 
-const removeDebugger = () => {
+const unmountDebugger = error => {
   debugBox.removeEventListener('click', executeNextLine, true)
+
+  const lastLines = debuggerUX.firstChild
+  if (lastLines) {
+    debuggerUX.removeChild(lastLines)
+    debuggerUX.appendChild(getCommandList())
+  }
+
+  if (error) {
+    debugBox.addEventListener('click', removeDebugger, true)
+    debugBox.classList.add('red')
+    consoleUX.classList.add('red')
+  } else {
+    consoleUX.classList.remove('next-line')
+    consoleUX.classList.add('success')
+    consoleUX.innerHTML = 'Successfully debugged!'
+    debugBox.addEventListener('click', removeDebugger, true)
+  }
+
+  debugBox.innerHTML = 'OK'
+}
+
+const removeDebugger = () => {
   showInterpreter()
 
   const lastLines = debuggerUX.firstChild
-  debuggerUX.removeChild(lastLines)
+  lastLines && debuggerUX.removeChild(lastLines)
 
-  consoleUX.classList.remove('next-line')
-  consoleUX.classList.add('success')
-  consoleUX.innerHTML = 'Successfully debugged!'
-
-  debugBox.classList.remove('nxt')
-  debugBox.classList.remove('debug-true')
-  debugBox.classList.add('debug-false')
-  debugBox.innerHTML = 'DEBUG'
-
-  debugBox.removeEventListener('click', executeNextLine(), true)
-  debugBox.addEventListener('click', toggleDebug, true)
   debug = false
+  showDebugFalse()
+  debugBox.innerHTML = 'DEBUG'
+  debugBox.removeEventListener('click', removeDebugger, true)
+  debugBox.addEventListener('click', toggleDebug, true)
 
-  runBox.classList.add('run-true')
-  runBox.classList.remove('run-false')
+  initiateConsole()
+  clearBoxes()
+  showRunTrue()
 }
 
 const showDebugger = () => {

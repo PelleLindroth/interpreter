@@ -4,51 +4,123 @@ const debuggerUX = document.querySelector('.debugger')
 const consoleUX = document.querySelector('.console')
 const boxes = []
 let commands = []
+let registerObject = {}
+let debugRegister = {}
 let debug = false
 let index = 0
 let debugBox
 let clearBox
 let runBox
 
+const start = () => {
+  createBoxes()
+  initiateConsole()
+  interpreterUX.focus()
+}
+
 const createBoxes = () => {
   debuggerUX.classList.add('debugger-hide')
 
-  for (let i = 0; i < 3; i++) {
-    for (let j = 0; j < 4; j++) {
-      let box = document.createElement('div')
-      box.className = 'box'
-      box.setAttribute('id', i + '' + j)
-      box.style.gridTemplateColumn = i
-      box.style.gridTemplateRow = j
-
-      if (box.id == '21') {
-        debugBox = box
-        debugBox.id = 'debugBox'
-        debugBox.innerHTML = 'DEBUG'
-        debugBox.className = 'debug-false'
-        debugBox.addEventListener('click', toggleDebug, true)
-      }
-      if (box.id == '22') {
-        clearBox = box
-        clearBox.id = 'clearBox'
-        clearBox.innerHTML = 'CLR'
-        clearBox.className = 'clr'
-        clearBox.addEventListener('click', reset, true)
-      }
-      if (box.id == '23') {
-        runBox = box
-        runBox.id = 'runBox'
-        runBox.innerHTML = 'RUN'
-        runBox.className = 'run-true'
-        runBox.addEventListener('click', execute, true)
-      }
+  for (let i = 0; i < 4; i++) {
+    for (let j = 0; j < 3; j++) {
+      box = initiateBox(i, j)
       boxes.push(box)
       registerUX.appendChild(box)
     }
   }
 }
 
+const initiateBox = (i, j) => {
+  let box = document.createElement('div')
+  box.className = 'box'
+  box.setAttribute('id', i + 1 + '' + (j + 1))
+  box.style.gridTemplateColumn = i
+  box.style.gridTemplateRow = j
+
+  if (box.id == '41') {
+    debugBox = box
+    debugBox.id = 'debugBox'
+    debugBox.innerHTML = 'DEBUG'
+    showDebugFalse()
+    debugBox.addEventListener('click', toggleDebug, true)
+    return debugBox
+  }
+  if (box.id == '42') {
+    clearBox = box
+    clearBox.id = 'clearBox'
+    clearBox.innerHTML = 'CLR'
+    clearBox.className = 'clr'
+    clearBox.addEventListener('click', reset, true)
+    return clearBox
+  }
+  if (box.id == '43') {
+    runBox = box
+    runBox.id = 'runBox'
+    runBox.innerHTML = 'RUN'
+    showRunTrue()
+    runBox.addEventListener('click', run, true)
+    return runBox
+  }
+  return box
+}
+
+const toggleDebug = () => {
+  debug = !debug
+
+  if (debug) {
+    showDebugTrue()
+    consoleUX.innerHTML = 'Press <span class="green">RUN</span> to debug'
+  } else {
+    showDebugFalse()
+    initiateConsole()
+  }
+}
+
+const reset = () => {
+  commands = []
+  interpreterUX.value = ''
+  interpreterUX.focus()
+  clearBoxes()
+  showInterpreter()
+  showDebugFalse()
+  initiateConsole()
+}
+
+const run = () => {
+  consoleUX.innerHTML = ''
+  commands = interpreterUX.value.split('\n')
+
+  if (commands.length == 1 && commands[0] == '') {
+    consoleUX.innerHTML = 'No code to run!'
+  } else {
+    // Remove empty lines
+    for (let i = 0; i < commands.length; i++) {
+      if (commands[i] == '') {
+        commands.splice(i, i + 1)
+        i--
+      }
+    }
+    // Run code
+    if (debug) {
+      debugStart()
+    } else {
+      registerObject = interpret(commands)
+
+      if (registerObject.registers) {
+        const registers = Object.entries(registerObject.registers)
+        drawRegister(registers)
+      } else {
+        handleError(registerObject.error)
+      }
+    }
+  }
+}
+
 const drawRegister = registers => {
+  if (!registers) {
+    console.log('no registers')
+    return
+  }
   let i = 0
   let error = ''
   let line = 0
@@ -81,56 +153,22 @@ const drawRegister = registers => {
   }
 }
 
-const toggleDebug = () => {
-  debug = !debug
-
-  if (debug) {
-    consoleUX.innerHTML = 'Press RUN to debug'
-    debugBox.classList.add('debug-true')
-    debugBox.classList.remove('debug-false')
-  } else {
-    initiateConsole()
-    debugBox.classList.add('debug-false')
-    debugBox.classList.remove('debug-true')
-  }
-}
-
-const reset = () => {
-  commands = []
-  interpreterUX.value = ''
-  interpreterUX.focus()
-  clearBoxes()
-  showInterpreter()
-  debugBox.classList.remove('debug-true')
-  initiateConsole()
-}
-
-const execute = () => {
-  consoleUX.innerHTML = ''
-  commands = interpreterUX.value.split('\n')
-
-  if (commands.length == 1 && commands[0] == '') {
-    consoleUX.innerHTML = 'No code to run!'
-  } else {
-    for (let i = 0; i < commands.length; i++) {
-      if (commands[i] == '') {
-        commands.splice(i, i + 1)
-        i--
-      }
-    }
-    if (debug) {
-      debugInterpreter()
-    } else {
-      const registerObject = interpret(commands)
-      const registers = Object.entries(registerObject)
-      drawRegister(registers)
-    }
-  }
-}
-
 const initiateConsole = () => {
   consoleUX.className = 'console'
-  consoleUX.innerHTML = 'Please type your code below and press RUN'
+  consoleUX.innerHTML = 'Please type your code below and press <span class="green">RUN</span>'
+}
+
+const showDebugTrue = () => {
+  debugBox.className = 'debug-true'
+}
+
+const showDebugFalse = () => {
+  debugBox.className = 'debug-false'
+}
+
+const showRunTrue = () => {
+  runBox.classList.add('run-true')
+  runBox.classList.remove('run-false')
 }
 
 const clearBoxes = () => {
@@ -141,7 +179,7 @@ const clearBoxes = () => {
   }
 }
 
-const handleError = (err, ln) => {
+const handleError = error => {
   consoleUX.className = 'err'
-  consoleUX.innerHTML = `Error on line ${ln}: ${err}`
+  consoleUX.innerHTML = `Error on line ${error.line}: ${error.message}`
 }
