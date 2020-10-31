@@ -3,7 +3,7 @@
   <head>
     <link rel="stylesheet" href="styles.css" />
     <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&family=Source+Code+Pro&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Turret+Road:wght@800&family=Roboto:wght@500;700&family=Source+Code+Pro&display=swap"
       rel="stylesheet"
     />
     <meta charset="UTF-8" />
@@ -12,15 +12,19 @@
   </head>
   <body>
     <div class="wrapper">
-      <header><h1>SIMPLE ASSEMBLER</h1></header>
-      <section class="register"></section>
-      <div class="console"></div>
-      <textarea
-        class="interpreter"
-        autocapitalize="off"
-        spellcheck="false"
-      ></textarea>
-      <div class="debugger"></div>
+      <div class="outline">
+        <header>
+          <h1><em>SIMPLE ASSEMBLER</em></h1>
+        </header>
+        <section class="register"></section>
+        <div class="console"></div>
+        <textarea
+          class="interpreter"
+          autocapitalize="off"
+          spellcheck="false"
+        ></textarea>
+        <div class="debugger"></div>
+      </div>
     </div>
     <script src="./js/interpret.js"></script>
     <script src="./js/ux.js"></script>
