@@ -49,6 +49,15 @@ h1 {
   justify-content: center;
 }
 
+.clr:active,
+.run-true:active,
+.run-false:active,
+.nxt:active,
+.debug-false:active,
+.debug-true:active {
+  transform: scale(0.98);
+}
+
 .clr,
 .run-true,
 .debug-true,
