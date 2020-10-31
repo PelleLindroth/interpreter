@@ -1,5 +1,6 @@
 function interpret(instructions) {
   let registers = {}
+  let registerHistory = []
   let labels = []
   let labelNames = []
   let loop = 0
@@ -7,6 +8,24 @@ function interpret(instructions) {
   let equal = false
   let greater = false
   let less = false
+  let supportedCommands = [
+    'mov',
+    'inc',
+    'dec',
+    'jnz',
+    'add',
+    'sub',
+    'mul',
+    'div',
+    'jmp',
+    'cmp',
+    'jne',
+    'je',
+    'jge',
+    'jg',
+    'jle',
+    'jl',
+  ]
 
   // Add labels
   for (let i = 0; i < instructions.length; i++) {
@@ -35,14 +54,31 @@ function interpret(instructions) {
 
     // If label, continue
     if (command.match('^.*:$')) {
+      registerHistory.push({ line: i, label: command })
       continue
+    }
+
+    // Detect invalid command
+    if (!supportedCommands.includes(command)) {
+      return {
+        error: {
+          message: `Invalid command: "${command}"`,
+          line: i + 1,
+        },
+        registerHistory,
+        labelNames,
+      }
     }
 
     // Detect infinite loop
     if (loop++ > 500) {
       return {
-        error: 'Infinite loop detected',
-        line: i + 1,
+        error: {
+          message: 'Infinite loop detected',
+          line: i + 1,
+        },
+        registerHistory,
+        labelNames,
       }
     }
 
@@ -61,8 +97,12 @@ function interpret(instructions) {
       !registers[reg]
     ) {
       return {
-        error: `Uninitialised register "${reg}"`,
-        line: i + 1,
+        error: {
+          error: `Uninitialised register "${reg}"`,
+          line: i + 1,
+        },
+        registerHistory,
+        labelNames,
       }
     }
 
@@ -159,11 +199,18 @@ function interpret(instructions) {
             continue
           }
           if (reg == label.name && label.line > i) {
+            registerHistory.push({ line: i, jmp: reg, to: label.line })
             i = label.line
           } else {
             return {
-              error: `Cannot jump back with "jmp"`,
-              line: i + 1,
+              error: {
+                error: {
+                  error: `Cannot jump back with "jmp"`,
+                  line: i + 1,
+                },
+                registerHistory,
+                labelNames,
+              },
             }
           }
         }
@@ -173,6 +220,7 @@ function interpret(instructions) {
         if (notEqual) {
           for (label of labels) {
             if (reg == label.name) {
+              registerHistory.push({ line: i, jmp: reg, to: label.line })
               i = label.line
             }
           }
@@ -184,6 +232,7 @@ function interpret(instructions) {
         if (equal) {
           for (label of labels) {
             if (reg == label.name) {
+              registerHistory.push({ line: i, jmp: reg, to: label.line })
               i = label.line
             }
           }
@@ -195,6 +244,7 @@ function interpret(instructions) {
         if (greater || equal) {
           for (label of labels) {
             if (reg == label.name) {
+              registerHistory.push({ line: i, jmp: reg, to: label.line })
               i = label.line
             }
           }
@@ -207,6 +257,7 @@ function interpret(instructions) {
         if (greater) {
           for (label of labels) {
             if (reg == label.name) {
+              registerHistory.push({ line: i, jmp: reg, to: label.line })
               i = label.line
             }
           }
@@ -218,6 +269,7 @@ function interpret(instructions) {
         if (less || equal) {
           for (label of labels) {
             if (reg == label.name) {
+              registerHistory.push({ line: i, jmp: reg, to: label.line })
               i = label.line
             }
           }
@@ -230,6 +282,7 @@ function interpret(instructions) {
         if (less) {
           for (label of labels) {
             if (reg == label.name) {
+              registerHistory.push({ line: i, jmp: reg, to: label.line })
               i = label.line
             }
           }
@@ -254,11 +307,20 @@ function interpret(instructions) {
 
       default:
         return {
-          error: `Invalid command: "${command}"`,
-          line: i + 1,
+          error: {
+            error: `Invalid command: "${command}"`,
+            line: i + 1,
+          },
+          registerHistory,
+          labelNames,
         }
     }
+    registerHistory.push({ line: i, reg: JSON.stringify(registers) })
   }
 
-  return registers
+  return {
+    registers,
+    registerHistory,
+    labelNames,
+  }
 }
