@@ -63,7 +63,7 @@ function interpret(instructions) {
       return {
         error: {
           message: `Invalid command: "${command}"`,
-          line: i + 1,
+          line: i,
         },
         registerHistory,
         labelNames,
@@ -75,7 +75,7 @@ function interpret(instructions) {
       return {
         error: {
           message: 'Infinite loop detected',
-          line: i + 1,
+          line: i,
         },
         registerHistory,
         labelNames,
@@ -99,7 +99,7 @@ function interpret(instructions) {
       return {
         error: {
           error: `Uninitialised register "${reg}"`,
-          line: i + 1,
+          line: i,
         },
         registerHistory,
         labelNames,
@@ -206,7 +206,7 @@ function interpret(instructions) {
               error: {
                 error: {
                   error: `Cannot jump back with "jmp"`,
-                  line: i + 1,
+                  line: i,
                 },
                 registerHistory,
                 labelNames,
@@ -309,7 +309,7 @@ function interpret(instructions) {
         return {
           error: {
             error: `Invalid command: "${command}"`,
-            line: i + 1,
+            line: i,
           },
           registerHistory,
           labelNames,

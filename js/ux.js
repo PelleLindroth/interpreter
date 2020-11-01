@@ -189,5 +189,5 @@ const clearBoxes = () => {
 
 const handleError = error => {
   consoleUX.className = 'err'
-  consoleUX.innerHTML = `Error on line ${error.line}: ${error.message}`
+  consoleUX.innerHTML = `Error on line ${error.line + 1}: ${error.message}`
 }

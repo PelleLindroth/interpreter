@@ -194,5 +194,8 @@ h1 {
 }
 
 .command-list-element-error {
-  color: red;
+  display: inherit;
+  background-color: red;
+  color: white;
+  opacity: 0.7;
 }

@@ -1,5 +1,4 @@
 const debugStart = () => {
-
   clearBoxes()
   setupDebugger()
   initiateNextButton()
@@ -25,16 +24,21 @@ const initiateNextButton = () => {
 }
 
 const executeNextLine = () => {
-  let nextLine = 0
   if (!debug) return
+
+  let nextLine = 0
   let error = false
   registerObject = interpret(commands)
   let history = registerObject.registerHistory
+  if (registerObject.error) {
+    history.push(registerObject.error)
+  }
 
-  if (registerObject.error && registerObject.error.line - 1 == index) {
+  if (registerObject.error && history[index].message) {
     handleError(registerObject.error)
     error = true
     unmountDebugger(error)
+    nextLine = registerObject.error.line
   } else if (history[index].jmp) {
     nextLine = history[index].to
     index++
@@ -48,9 +52,11 @@ const executeNextLine = () => {
     history[index] ? nextLine = history[index].line : nextLine = nextLine
     drawRegister(registers)
   }
-  history[index] != undefined && showNextLineMessage(nextLine)
-  refreshDebugWindow(nextLine)
-  index == history.length && unmountDebugger(error)
+  if (!error) {
+    history[index] != undefined && showNextLineMessage(nextLine)
+    index == history.length && unmountDebugger(error)
+  }
+  refreshDebugWindow(nextLine, error)
 }
 
 const showNextLineMessage = nextLine => {
@@ -61,33 +67,33 @@ const showNextLineMessage = nextLine => {
       </div>`
 }
 
-function refreshDebugWindow(nextLine) {
+function refreshDebugWindow(nextLine, error) {
   const lastLines = debuggerUX.firstChild
   if (lastLines) {
     debuggerUX.removeChild(lastLines)
-    debuggerUX.appendChild(getCommandList(nextLine))
+    debuggerUX.appendChild(getCommandList(nextLine, error))
   }
 
-  scrollCode(debuggerUX, nextLine * 20, 'smooth')
+  scrollCode(debuggerUX, nextLine * 16, 'smooth')
 }
 
-const getCommandList = nextLine => {
+const getCommandList = (nextLine, error) => {
   let commandList = document.createElement('ul')
 
   for (let i = 0; i < commands.length; i++) {
     let li = document.createElement('li')
     li.innerText = commands[i]
     if (i == nextLine) {
-      li.classList.add('command-list-element-highlight')
-      li.id = 'current'
-
+      if (error) {
+        li.classList.add('command-list-element-error')
+      } else {
+        li.classList.add('command-list-element-highlight')
+      }
     } else {
       li.classList.add('command-list-element-opaque')
     }
 
-
     commandList.appendChild(li)
-
   }
 
   commandList.classList.add('command-list')
