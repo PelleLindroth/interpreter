@@ -12,6 +12,13 @@ const setupDebugger = () => {
   debuggerUX.appendChild(getCommandList())
 }
 
+const showDebugger = () => {
+  interpreterUX.classList.remove('interpreter-show')
+  interpreterUX.classList.add('interpreter-hide')
+  debuggerUX.classList.remove('debugger-hide')
+  debuggerUX.classList.add('debugger-show')
+}
+
 const initiateNextButton = () => {
   runBox.className = 'run-false'
   consoleUX.classList.add('next-line')
@@ -143,13 +150,6 @@ const removeDebugger = () => {
   clearBoxes()
   showRunTrue()
   runBox.addEventListener('click', run, true)
-}
-
-const showDebugger = () => {
-  interpreterUX.classList.remove('interpreter-show')
-  interpreterUX.classList.add('interpreter-hide')
-  debuggerUX.classList.remove('debugger-hide')
-  debuggerUX.classList.add('debugger-show')
 }
 
 const scrollCode = (el, value, style) => {

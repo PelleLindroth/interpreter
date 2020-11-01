@@ -65,8 +65,7 @@ function interpret(instructions) {
           message: `Invalid command: "${command}"`,
           line: i,
         },
-        registerHistory,
-        labelNames,
+        registerHistory
       }
     }
 
@@ -77,8 +76,7 @@ function interpret(instructions) {
           message: 'Infinite loop detected',
           line: i,
         },
-        registerHistory,
-        labelNames,
+        registerHistory
       }
     }
 
@@ -90,19 +88,20 @@ function interpret(instructions) {
       less = false
     }
 
+    // Error if uninitialised register
     if (
       command != 'mov' &&
+      command != 'jmp' &&
       !labelNames.includes(reg) &&
       !Number(reg) &&
       !registers[reg]
     ) {
       return {
         error: {
-          error: `Uninitialised register "${reg}"`,
+          message: `Uninitialised register \"${reg}\"`,
           line: i,
         },
-        registerHistory,
-        labelNames,
+        registerHistory
       }
     }
 
@@ -208,9 +207,8 @@ function interpret(instructions) {
                   error: `Cannot jump back with "jmp"`,
                   line: i,
                 },
-                registerHistory,
-                labelNames,
-              },
+                registerHistory
+              }
             }
           }
         }
@@ -311,8 +309,7 @@ function interpret(instructions) {
             error: `Invalid command: "${command}"`,
             line: i,
           },
-          registerHistory,
-          labelNames,
+          registerHistory
         }
     }
     registerHistory.push({ line: i, reg: JSON.stringify(registers) })
@@ -320,7 +317,6 @@ function interpret(instructions) {
 
   return {
     registers,
-    registerHistory,
-    labelNames,
+    registerHistory
   }
 }

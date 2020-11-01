@@ -3,19 +3,16 @@ const interpreterUX = document.querySelector('.interpreter')
 const debuggerUX = document.querySelector('.debugger')
 const consoleUX = document.querySelector('.console')
 const boxes = []
+const debugRegister = {}
 let commands = []
 let registerObject = {}
-let debugRegister = {}
 let debug = false
 let index = 0
-let debugBox
-let clearBox
-let runBox
+let debugBox, clearBox, runBox
 
 const start = () => {
   createBoxes()
   initiateConsole()
-  interpreterUX.focus()
 }
 
 const createBoxes = () => {
@@ -28,6 +25,11 @@ const createBoxes = () => {
       registerUX.appendChild(box)
     }
   }
+}
+
+const initiateConsole = () => {
+  consoleUX.className = 'console'
+  consoleUX.innerHTML = 'Press <span class="green">RUN</span> to execute'
 }
 
 const initiateBox = (i, j) => {
@@ -151,11 +153,6 @@ const drawRegister = registers => {
       }
     }
   }
-}
-
-const initiateConsole = () => {
-  consoleUX.className = 'console'
-  consoleUX.innerHTML = 'Please type your code below and press <span class="green">RUN</span>'
 }
 
 const showDebugTrue = () => {
