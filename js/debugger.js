@@ -52,11 +52,13 @@ const executeNextLine = () => {
     history[index] ? nextLine = history[index].line : nextLine = nextLine
     drawRegister(registers)
   }
+  refreshDebugWindow(nextLine, error)
   if (!error) {
     history[index] != undefined && showNextLineMessage(nextLine)
     index == history.length && unmountDebugger(error)
+  } else {
+    refreshDebugWindow(nextLine, error)
   }
-  refreshDebugWindow(nextLine, error)
 }
 
 const showNextLineMessage = nextLine => {
