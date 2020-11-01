@@ -79,10 +79,10 @@ const toggleDebug = () => {
 const reset = () => {
   commands = []
   interpreterUX.value = ''
-  interpreterUX.focus()
   clearBoxes()
   showInterpreter()
   showDebugFalse()
+  showRunTrue()
   initiateConsole()
 }
 
@@ -169,6 +169,14 @@ const showDebugFalse = () => {
 const showRunTrue = () => {
   runBox.classList.add('run-true')
   runBox.classList.remove('run-false')
+}
+
+const showInterpreter = () => {
+  debuggerUX.classList.remove('debugger-show')
+  debuggerUX.classList.add('debugger-hide')
+  interpreterUX.classList.remove('interpreter-hide')
+  interpreterUX.classList.add('interpreter-show')
+  interpreterUX.focus()
 }
 
 const clearBoxes = () => {
