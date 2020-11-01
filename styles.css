@@ -24,7 +24,7 @@ body {
   flex-direction: column;
   width: 22rem;
   justify-content: center;
-  margin-top: 1rem;
+  margin-top: 5px;
   padding: 3px;
   border: 3px solid #ccc;
 }
@@ -42,6 +42,7 @@ h1 {
   color: yellow;
   font-family: 'Turret Road', cursive;
   letter-spacing: 1px;
+  text-shadow: 1px 1px 10px #777;
 }
 
 .register {
@@ -145,7 +146,6 @@ h1 {
 }
 
 .code {
-  /* background-color: #bbb; */
   font-family: 'Source Code Pro', monospace;
   font-size: 14px;
   padding: 0 5px;
