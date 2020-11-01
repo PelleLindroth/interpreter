@@ -83,7 +83,7 @@ function refreshDebugWindow(nextLine, error) {
     debuggerUX.appendChild(getCommandList(nextLine, error))
   }
 
-  scrollCode(debuggerUX, nextLine * 16, 'smooth')
+  scrollCode(debuggerUX, nextLine * 20, 'smooth')
 }
 
 const getCommandList = (nextLine, error) => {
