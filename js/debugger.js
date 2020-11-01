@@ -67,6 +67,8 @@ function refreshDebugWindow(nextLine) {
     debuggerUX.removeChild(lastLines)
     debuggerUX.appendChild(getCommandList(nextLine))
   }
+
+  scrollCode(debuggerUX, nextLine * 20, 'smooth')
 }
 
 const getCommandList = nextLine => {
@@ -77,11 +79,15 @@ const getCommandList = nextLine => {
     li.innerText = commands[i]
     if (i == nextLine) {
       li.classList.add('command-list-element-highlight')
+      li.id = 'current'
+
     } else {
       li.classList.add('command-list-element-opaque')
     }
 
+
     commandList.appendChild(li)
+
   }
 
   commandList.classList.add('command-list')
@@ -114,6 +120,7 @@ const unmountDebugger = error => {
 
 const removeDebugger = () => {
   showInterpreter()
+  scrollCode(interpreterUX, 0, 'auto')
 
   const lastLines = debuggerUX.firstChild
   lastLines && debuggerUX.removeChild(lastLines)
@@ -137,9 +144,10 @@ const showDebugger = () => {
   debuggerUX.classList.add('debugger-show')
 }
 
-const showInterpreter = () => {
-  debuggerUX.classList.remove('debugger-show')
-  debuggerUX.classList.add('debugger-hide')
-  interpreterUX.classList.remove('interpreter-hide')
-  interpreterUX.classList.add('interpreter-show')
+const scrollCode = (el, value, style) => {
+  el.scroll({
+    top: value,
+    left: 0,
+    behavior: style
+  })
 }
