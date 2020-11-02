@@ -70,7 +70,7 @@ function interpret(instructions) {
     }
 
     // Detect infinite loop
-    if (loop++ > 500) {
+    if (loop++ > 10000000) {
       return {
         error: {
           message: 'Infinite loop detected',
@@ -92,9 +92,11 @@ function interpret(instructions) {
     if (
       command != 'mov' &&
       command != 'jmp' &&
+      command != 'jnz' &&
       !labelNames.includes(reg) &&
       !Number(reg) &&
-      !registers[reg]
+      !registers[reg] &&
+      registers[reg] != 0
     ) {
       return {
         error: {
@@ -108,7 +110,7 @@ function interpret(instructions) {
     // Execute current command
     switch (command) {
       case 'mov':
-        if (num) {
+        if (num || num == 0) {
           registers[reg] = num
         } else {
           registers[reg] = registers[value]
@@ -116,7 +118,7 @@ function interpret(instructions) {
         break
 
       case 'add':
-        if (num) {
+        if (num || num == 0) {
           registers[reg] += num
         } else {
           registers[reg] += registers[value]
@@ -124,7 +126,7 @@ function interpret(instructions) {
         break
 
       case 'sub':
-        if (num) {
+        if (num || num == 0) {
           registers[reg] -= num
         } else {
           registers[reg] -= registers[value]
@@ -289,16 +291,25 @@ function interpret(instructions) {
         break
 
       case 'jnz':
-        if (+reg && reg > 0) {
-          i += num - 1
+        steps = parseInt(value)
+
+        if (registers[reg] && registers[reg] != 0) {
+          registerHistory.push({ line: i, jnz: reg, to: i + steps })
+          i += steps - 1
           break
         }
-        if (registers[reg] > 0) {
-          steps = parseInt(value)
-          if (steps < 0) {
-            i += steps - 1
+        if (+reg > 0) {
+          if (steps <= 0) {
+            return {
+              error: {
+                message: 'Infinite loop detected',
+                line: i,
+              },
+              registerHistory
+            }
           } else {
-            i += value - 1
+            registerHistory.push({ line: i, jnz: reg, to: i + steps })
+            i += steps - 1
           }
         }
         break
@@ -306,7 +317,7 @@ function interpret(instructions) {
       default:
         return {
           error: {
-            error: `Invalid command: "${command}"`,
+            message: `Invalid command: "${command}"`,
             line: i,
           },
           registerHistory

@@ -5,6 +5,7 @@ const debugStart = () => {
 }
 
 const setupDebugger = () => {
+  registerObject = interpret(commands)
   index = 0
   showDebugger()
   runBox.removeEventListener('click', run, true)
@@ -35,7 +36,6 @@ const executeNextLine = () => {
 
   let nextLine = 0
   let error = false
-  registerObject = interpret(commands)
   let history = registerObject.registerHistory
   if (registerObject.error) {
     history.push(registerObject.error)
@@ -47,8 +47,13 @@ const executeNextLine = () => {
     unmountDebugger(error)
     nextLine = registerObject.error.line
   } else if (history[index].jmp) {
+    console.log('jmp')
     nextLine = history[index].to
     index++
+  } else if (history[index].jnz) {
+    nextLine = history[index].to
+    console.log(nextLine)
+    index += 2
   } else if (history[index].label) {
     nextLine = history[index++].line
     const registers = Object.entries(JSON.parse(history[index - 2].reg))
