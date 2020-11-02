@@ -30,18 +30,27 @@ body {
 }
 
 header {
+  align-items: center;
   background-color: #ccc;
   border-radius: 5px;
   box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
   margin-bottom: 2px;
-  padding: 15px 0 10px 1rem;
+  padding: 15px 0.8rem 10px;
   width: 22rem;
 }
 
 h1 {
   color: yellow;
   font-family: 'Turret Road', cursive;
+  font-size: 1.3rem;
   letter-spacing: 1px;
+}
+
+nav {
+  color: white;
+  cursor: pointer;
 }
 
 .register {
