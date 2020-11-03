@@ -1,3 +1,4 @@
+const menuNav = document.querySelector('nav')
 const registerUX = document.querySelector('.register')
 const interpreterUX = document.querySelector('.interpreter')
 const debuggerUX = document.querySelector('.debugger')
@@ -7,10 +8,12 @@ const debugRegister = {}
 let commands = []
 let registerObject = {}
 let debug = false
+let showInstructions = false
 let index = 0
 let debugBox, clearBox, runBox
 
 const start = () => {
+  initiateInstructions()
   createBoxes()
   initiateConsole()
 }
@@ -25,6 +28,10 @@ const createBoxes = () => {
       registerUX.appendChild(box)
     }
   }
+}
+
+const initiateInstructions = () => {
+  menuNav.addEventListener('click', toggleInstructions, true)
 }
 
 const initiateConsole = () => {
@@ -75,6 +82,31 @@ const toggleDebug = () => {
   } else {
     showDebugFalse()
     initiateConsole()
+  }
+}
+
+const toggleInstructions = () => {
+  showInstructions = !showInstructions
+  animateInstructions(showInstructions)
+}
+
+const animateInstructions = showInstructions => {
+  const header = document.querySelector('header')
+  const open = document.querySelector('.open')
+  const close = document.querySelector('.close')
+
+  if (!showInstructions) {
+    header.style.height = '3rem'
+    interpreterUX.style.height = '16rem'
+    registerUX.style.height = '16rem';
+    open.style.display = 'block'
+    close.style.display = 'none'
+  } else {
+    header.style.height = '29rem'
+    registerUX.style.height = '5rem';
+    interpreterUX.style.height = '1rem'
+    open.style.display = 'none'
+    close.style.display = 'block'
   }
 }
 
