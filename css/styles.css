@@ -77,6 +77,15 @@ nav {
   padding-right: 15px;
 }
 
+@media (max-width: 450px) {
+  .instructions {
+    color: #333;
+    margin-top: 1.5rem;
+    overflow: auto;
+    padding-right: 15px;
+  }
+}
+
 .instructions h3 {
   font-size: 1rem;
   padding-bottom: 2px;
