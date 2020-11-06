@@ -14,11 +14,95 @@
     <div class="wrapper">
       <div class="outline">
         <header>
-          <h1><em>ASSEMBLY INTERPRETER</em></h1>
-          <nav>
-            <img class="open" src="./assets/menu-24px.svg" alt="open icon" />
-            <img class="close" src="./assets/close-24px.svg" alt="close icon" />
-          </nav>
+          <div class="top-line">
+            <h1><em>ASSEMBLY INTERPRETER</em></h1>
+            <nav>
+              <img class="open" src="./assets/menu-24px.svg" alt="open icon" />
+              <img
+                class="close"
+                src="./assets/close-24px.svg"
+                alt="close icon"
+              />
+            </nav>
+          </div>
+          <article class="instructions">
+            <h3>Available commands</h3>
+            <p>
+              <span class="code gray">mov x y</span> - copies y (either a
+              constant value or the content of a register) into register x
+            </p>
+            <p>
+              <span class="code gray">inc x</span> - increases the content of
+              the register x by one
+            </p>
+            <p>
+              <span class="code gray">dec x</span> - decreases the content of
+              the register x by one
+            </p>
+            <p>
+              <span class="code gray">add x y</span> - add the content of the
+              register x with y (either an integer or the value of a register)
+              and stores the result in x (i.e. register[x] += y).
+            </p>
+
+            <p>
+              <span class="code gray">sub x y</span> - subtract y (either an
+              integer or the value of a register) from the register x and stores
+              the result in x (i.e. register[x] -= y).
+            </p>
+
+            <p><span class="code gray">mul x y</span> - same with multiply</p>
+
+            <p>
+              <span class="code gray">div x y</span> - same with integer
+              division
+            </p>
+            <p>
+              <span class="code gray">jnz x y</span> - jumps to an instruction y
+              steps away (positive means forward, negative means backward, y can
+              be a register or a constant), but only if x (a constant or a
+              register) is not zero
+            </p>
+            <p>
+              <span class="code gray">label:</span> - define a label position
+              (label = identifier + ":", an identifier being a string that does
+              not match any other command). Jump commands and call are aimed to
+              these labels positions in the program.
+            </p>
+            <p>
+              <span class="code gray">jmp lbl</span> - jumps to the label lbl.
+            </p>
+            <p>
+              <span class="code gray">cmp x y</span> - compares x (either an
+              integer or the value of a register) and y (either an integer or
+              the value of a register). The result is used in the conditional
+              jumps (jne, je, jge, jg, jle and jl)
+            </p>
+            <p>
+              <span class="code gray">jne lbl</span> - jump to the label lbl if
+              the values of the previous cmp command were not equal.
+            </p>
+            <p>
+              <span class="code gray">je lbl</span> - jump to the label lbl if
+              the values of the previous cmp command were equal.
+            </p>
+            <p>
+              <span class="code gray">jge lbl</span> - jump to the label lbl if
+              x was greater or equal than y in the previous cmp command.
+            </p>
+            <p>
+              <span class="code gray">jg lbl</span> - jump to the label lbl if x
+              was greater than y in the previous cmp command.
+            </p>
+            <p>
+              <span class="code gray">jle lbl</span> - jump to the label lbl if
+              x was less or equal than y in the previous cmp command.
+            </p>
+            <p>
+              <span class="code gray">jl lbl</span> - jump to the label lbl if x
+              was less than y in the previous cmp command.
+            </p>
+          </article>
         </header>
         <section class="register"></section>
         <div class="console"></div>

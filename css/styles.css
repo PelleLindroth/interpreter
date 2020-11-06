@@ -31,18 +31,24 @@ body {
 }
 
 header {
-  align-items: flex-start;
   background-color: #ccc;
   border-radius: 5px;
   box-sizing: border-box;
   display: flex;
+  flex-direction: column;
   height: 3rem;
-  justify-content: space-between;
   margin-bottom: 2px;
+  overflow: hidden;
   padding: 15px 0.8rem 10px;
   transform: height 1s;
   width: 22rem;
   transition: height 0.5s;
+}
+
+.top-line {
+  display: flex;
+  height: 3rem;
+  justify-content: space-between;
 }
 
 h1 {
@@ -57,7 +63,7 @@ nav {
 }
 
 .open {
-  margin-top: -2px;
+  margin-top: -3px;
 }
 
 .close {
@@ -66,7 +72,19 @@ nav {
 }
 
 .instructions {
-  display: none;
+  color: #333;
+  overflow: auto;
+  padding-right: 15px;
+}
+
+.instructions h3 {
+  font-size: 1rem;
+  padding-bottom: 2px;
+}
+
+.instructions p {
+  line-height: 1.5;
+  padding: 2px;
 }
 
 .register {
@@ -177,6 +195,10 @@ nav {
   background-color: yellow;
   color: black;
   opacity: 0.7;
+}
+
+.gray {
+  background-color: #aaa;
 }
 
 .interpreter,
