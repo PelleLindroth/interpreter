@@ -10,6 +10,7 @@ const setupDebugger = () => {
   showDebugger()
   runBox.removeEventListener('click', run, true)
   runBox.classList.remove()
+  clearBox.innerText = 'QUIT'
   debuggerUX.appendChild(getCommandList())
 }
 
@@ -148,6 +149,7 @@ const removeDebugger = () => {
   debug = false
   showDebugFalse()
   debugBox.innerHTML = 'DEBUG'
+  clearBox.innerText = 'CLR'
   debugBox.removeEventListener('click', removeDebugger, true)
   debugBox.addEventListener('click', toggleDebug, true)
 

@@ -111,11 +111,14 @@ const animateInstructions = showInstructions => {
 }
 
 const reset = () => {
-  commands = []
-  interpreterUX.value = ''
+  if (!debug) {
+    commands = []
+    interpreterUX.value = ''
+  }
   clearBoxes()
   showInterpreter()
   showDebugFalse()
+  removeDebugger()
   showRunTrue()
   initiateConsole()
 }
